@@ -1,0 +1,93 @@
+/*
+** 
+** This must be run in the SEIS732_Team_21_Star_Schema database
+** 
+** Where the Midwest region is defined as dealers in Iowa (IA), 
+** Minnesota (MN), North Dakota (ND), South Dakota (SD), and
+** Wisconsin (WI)
+**
+** This SQL is authored by 31300-Henrique to verify 30100-Jeevan's report
+**
+** Verification of the Fees paid by Corporate Dealers in the Midwest Region
+**
+** 
+*/
+
+select
+		case when grouping(D.DLR_State) = 1 then 'Grand Total'
+		else D.DLR_State end as Dealer_State,
+		convert(varchar, convert(money, sum (S.RRV_Handling_Fees)),1) as Total_Handling_Fees,
+		convert(varchar, convert (money, sum (S.RRV_Processing_Fees)),1) as Total_Processing_Fees,
+		convert(varchar, convert (money,sum (S.RRV_Transit_Fees)),1) as Total_Transit_Fees	
+from 
+		RRV_SALES S,
+		DEALER D
+where
+		S.DLR_Key = D.DLR_Key 
+and
+		(
+			D.DLR_State = 'IA'
+		or 
+			D.DLR_State = 'MN'
+		or
+			D.DLR_State = 'ND'
+		or
+			D.DLR_State = 'SD'
+		or
+			D.DLR_State = 'WI'
+		)
+and 
+		(
+			D.DLR_Independent_Or_Corporate = 'Corporate'
+		)
+		
+group by 
+		D.DLR_State with ROLLUP
+		
+/****************************************************************************************************/		
+	/*
+** 
+** This must be run in the SEIS732_Team_21_Star_Schema database
+** 
+** Where the Midwest region is defined as dealers in Iowa (IA), 
+** Minnesota (MN), North Dakota (ND), South Dakota (SD), and
+** Wisconsin (WI)
+**
+** This SQL is authored by 31300-Henrique to verify 30100-Jeevan's report
+**
+** Verification of the Fees paied by Independent Dealers in the Midwest Region
+**
+** 
+*/
+select
+		case when grouping(D.DLR_State) = 1 then 'Grand Total'
+		else D.DLR_State end as Dealer_State,
+		convert(varchar, convert(money, sum (S.RRV_Handling_Fees)),1) as Total_Handling_Fees,
+		convert(varchar, convert (money, sum (S.RRV_Processing_Fees)),1) as Total_Processing_Fees,
+		convert(varchar, convert (money,sum (S.RRV_Transit_Fees)),1) as Total_Transit_Fees	
+from 
+		RRV_SALES S,
+		DEALER D
+where
+		S.DLR_Key = D.DLR_Key 
+and
+		(
+			D.DLR_State = 'IA'
+		or 
+			D.DLR_State = 'MN'
+		or
+			D.DLR_State = 'ND'
+		or
+			D.DLR_State = 'SD'
+		or
+			D.DLR_State = 'WI'
+		)
+and 
+		(
+			D.DLR_Independent_Or_Corporate = 'Independent'
+		)
+		
+group by 
+		D.DLR_State with ROLLUP	
+		
+		
